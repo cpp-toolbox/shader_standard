@@ -35,6 +35,7 @@ class ShaderType(Enum):
     ABSOLUTE_POSITION_WITH_SOLID_COLOR = auto()
     TEXT = auto()
     ABSOLUTE_POSITION_WITH_COLORED_VERTEX = auto()
+    TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
 
 
 class ShaderUniformVariable(Enum):
@@ -54,6 +55,9 @@ class ShaderUniformVariable(Enum):
     AMBIENT_LIGHT_STRENGTH = auto()
     AMBIENT_LIGHT_COLOR = auto()
     DIFFUSE_LIGHT_POSITION = auto()
+    # Text
+    CHARACTER_WIDTH = auto()      
+    EDGE_TRANSITION_WIDTH = auto()
 
 
 @dataclass
@@ -74,6 +78,8 @@ shader_uniform_variable_to_data = {
     ShaderUniformVariable.AMBIENT_LIGHT_STRENGTH: ShaderUniformVariableData("float"),
     ShaderUniformVariable.AMBIENT_LIGHT_COLOR: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.DIFFUSE_LIGHT_POSITION: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.CHARACTER_WIDTH: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.EDGE_TRANSITION_WIDTH: ShaderUniformVariableData("float"),
 }
 
 
@@ -146,6 +152,10 @@ shader_catalog = {
         "colored_vertices.vert",
         "colored_vertices.frag",
     ),
+    ShaderType.TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT: ShaderProgram(
+        "transform_v_with_texture_coordinate_passthrough.vert",
+        "signed_distance_field_text.frag"
+    )
 }
 
 shader_vertex_attribute_to_data = {

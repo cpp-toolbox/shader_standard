@@ -267,12 +267,36 @@ def generate_cpp(shader_info):
     with open("shader_standard.hpp", "w") as hpp_file:
         hpp_file.write("\n".join(cpp_output))
 
+def generate_py_shader_summary(shader_info):
+    py_output = []  # List to accumulate output lines
+
+    # Generate shader_to_used_vertex_attribute_variables
+    py_output.append("from standard import *\n")
+    py_output.append("shader_to_used_vertex_attribute_variables = {\n")
+    for shader_type, variables in shader_info.items():
+        attributes = ', '.join(f"ShaderVertexAttributeVariable.{attr}" for attr in variables['valid_attributes'])
+        py_output.append(f"    ShaderType.{shader_type.name}: [{attributes}],\n")
+    py_output.append("}\n\n")
+
+    # # Generate shader_to_used_uniform_variable
+    # py_output.append("shader_to_used_uniform_variable = {\n")
+    # for shader_type, variables in shader_info.items():
+    #     uniforms = ', '.join(f"ShaderUniformVariable.{uniform}" for uniform in variables['valid_uniforms'])
+    #     py_output.append(f"    ShaderType.{shader_type.name}: {{{uniforms}}},\n")
+    # py_output.append("}\n")
+
+    # Write all accumulated lines to the file
+    with open("shader_summary.py", 'w') as f:
+        f.writelines(py_output)
+
+
 
 if __name__ == "__main__":
     # Set up argument parsing
     parser = argparse.ArgumentParser(description="Shader Standard Manager")
     parser.add_argument(
         "--verbose", 
+        "-v",
         action="store_true", 
         help="Enable verbose output for successful verifications"
     )
@@ -284,14 +308,17 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--summary", 
+        "-s",
         action="store_true", 
         help="Output shader variable information for each shader"
     )
     parser.add_argument(
         "--gen-cpp", 
+        "-gc",
         action="store_true", 
         help="Generates the required cpp file to integrate with the shader cache"
     )
+    parser.add_argument('--gen-py-shader-summary', '-gp', action="store_true", help="Generate Python shader summary file")
 
     args = parser.parse_args()
 
@@ -299,4 +326,8 @@ if __name__ == "__main__":
     shader_info = validate_all_shaders(shader_catalog, args.shader_directory, args.verbose, args.summary)
     if args.gen_cpp:
         generate_cpp(shader_info)
+
+    if args.gen_py_shader_summary:
+        generate_py_shader_summary(shader_info)
+
 

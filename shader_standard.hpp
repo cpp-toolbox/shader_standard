@@ -15,6 +15,7 @@ enum class ShaderType {
     ABSOLUTE_POSITION_WITH_SOLID_COLOR,
     TEXT,
     ABSOLUTE_POSITION_WITH_COLORED_VERTEX,
+    TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT,
 };
 
 enum class ShaderVertexAttributeVariable {
@@ -44,6 +45,8 @@ enum class ShaderUniformVariable {
     AMBIENT_LIGHT_STRENGTH,
     AMBIENT_LIGHT_COLOR,
     DIFFUSE_LIGHT_POSITION,
+    CHARACTER_WIDTH,
+    EDGE_TRANSITION_WIDTH,
 };
 
 struct ShaderCreationInfo {
@@ -96,6 +99,8 @@ public:
             {ShaderUniformVariable::AMBIENT_LIGHT_STRENGTH, "ambient_light_strength"},
             {ShaderUniformVariable::AMBIENT_LIGHT_COLOR, "ambient_light_color"},
             {ShaderUniformVariable::DIFFUSE_LIGHT_POSITION, "diffuse_light_position"},
+            {ShaderUniformVariable::CHARACTER_WIDTH, "character_width"},
+            {ShaderUniformVariable::EDGE_TRANSITION_WIDTH, "edge_transition_width"},
         };
         shader_vertex_attribute_variable_to_name = {
             {ShaderVertexAttributeVariable::XYZ_POSITION, "xyz_position"},
@@ -114,6 +119,7 @@ public:
             {ShaderType::ABSOLUTE_POSITION_WITH_SOLID_COLOR, "absolute_position_with_solid_color"},
             {ShaderType::TEXT, "text"},
             {ShaderType::ABSOLUTE_POSITION_WITH_COLORED_VERTEX, "absolute_position_with_colored_vertex"},
+            {ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, "transform_v_with_signed_distance_field_text"},
         };
         shader_catalog = {
             {ShaderType::CWL_V_TRANSFORMATION_WITH_SOLID_COLOR, {"assets/shaders/CWL_v_transformation.vert", "assets/shaders/solid_color.frag"}},
@@ -125,6 +131,7 @@ public:
             {ShaderType::ABSOLUTE_POSITION_WITH_SOLID_COLOR, {"assets/shaders/absolute_position.vert", "assets/shaders/solid_color.frag"}},
             {ShaderType::TEXT, {"assets/shaders/text.vert", "assets/shaders/text.frag"}},
             {ShaderType::ABSOLUTE_POSITION_WITH_COLORED_VERTEX, {"assets/shaders/colored_vertices.vert", "assets/shaders/colored_vertices.frag"}},
+            {ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, {"assets/shaders/transform_v_with_texture_coordinate_passthrough.vert", "assets/shaders/signed_distance_field_text.frag"}},
         };
         shader_to_used_vertex_attribute_variables = {
             {ShaderType::CWL_V_TRANSFORMATION_WITH_SOLID_COLOR, {ShaderVertexAttributeVariable::XYZ_POSITION}},
@@ -136,6 +143,7 @@ public:
             {ShaderType::ABSOLUTE_POSITION_WITH_SOLID_COLOR, {ShaderVertexAttributeVariable::XYZ_POSITION}},
             {ShaderType::TEXT, {ShaderVertexAttributeVariable::PASSTHROUGH_TEXTURE_COORDINATE, ShaderVertexAttributeVariable::XY_POSITION}},
             {ShaderType::ABSOLUTE_POSITION_WITH_COLORED_VERTEX, {ShaderVertexAttributeVariable::XYZ_POSITION, ShaderVertexAttributeVariable::PASSTHROUGH_RGB_COLOR}},
+            {ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, {ShaderVertexAttributeVariable::XYZ_POSITION, ShaderVertexAttributeVariable::PASSTHROUGH_TEXTURE_COORDINATE}},
         };
         shader_to_used_uniform_variable = {
             {ShaderType::CWL_V_TRANSFORMATION_WITH_SOLID_COLOR, {ShaderUniformVariable::LOCAL_TO_WORLD, ShaderUniformVariable::WORLD_TO_CAMERA, ShaderUniformVariable::CAMERA_TO_CLIP, ShaderUniformVariable::RGBA_COLOR}},
@@ -147,6 +155,7 @@ public:
             {ShaderType::ABSOLUTE_POSITION_WITH_SOLID_COLOR, {ShaderUniformVariable::RGBA_COLOR}},
             {ShaderType::TEXT, {ShaderUniformVariable::CAMERA_TO_CLIP, ShaderUniformVariable::TEXT_TEXTURE_UNIT, ShaderUniformVariable::RGB_COLOR}},
             {ShaderType::ABSOLUTE_POSITION_WITH_COLORED_VERTEX, {}},
+            {ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, {ShaderUniformVariable::TRANSFORM, ShaderUniformVariable::TEXTURE_SAMPLER, ShaderUniformVariable::CHARACTER_WIDTH, ShaderUniformVariable::EDGE_TRANSITION_WIDTH, ShaderUniformVariable::RGB_COLOR}},
         };
     }
 };
