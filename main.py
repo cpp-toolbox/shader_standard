@@ -263,8 +263,12 @@ def generate_cpp(shader_info):
 
     cpp_output.append("#endif // SHADER_STANDARD_HPP")
 
+    # Define the output directory (script directory)
+    output_directory = os.path.dirname(os.path.abspath(__file__))
+
     # Write to output header file
-    with open("shader_standard.hpp", "w") as hpp_file:
+    header_file_path = os.path.join(output_directory, "shader_standard.hpp")
+    with open(header_file_path, "w") as hpp_file:
         hpp_file.write("\n".join(cpp_output))
 
 def generate_py_shader_summary(shader_info):
@@ -285,8 +289,12 @@ def generate_py_shader_summary(shader_info):
     #     py_output.append(f"    ShaderType.{shader_type.name}: {{{uniforms}}},\n")
     # py_output.append("}\n")
 
+    # Define the output directory (script directory)
+    output_directory = os.path.dirname(os.path.abspath(__file__))
+
     # Write all accumulated lines to the file
-    with open("shader_summary.py", 'w') as f:
+    summary_file_path = os.path.join(output_directory, "shader_summary.py")
+    with open(summary_file_path, 'w') as f:
         f.writelines(py_output)
 
 
@@ -302,6 +310,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--shader-directory", 
+        "-sd",
         type=str, 
         default="../../assets/shaders/",
         help="Path to the directory containing shader files"
