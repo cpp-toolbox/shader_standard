@@ -1,2 +1,5 @@
 sbpt_generated_includes.hpp
 __pycache__
+shader_standard.hpp
+shader_standard.cpp
+shader_summary.py
