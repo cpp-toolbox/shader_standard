@@ -18,6 +18,9 @@ class ShaderVertexAttributeVariable(Enum):
     PASSTHROUGH_TEXTURE_COORDINATE = auto()
     PASSTHROUGH_RGB_COLOR = auto()
     PASSTHROUGH_NORMAL = auto()
+    PASSTHROUGH_BONE_IDS = auto()
+    PASSTHROUGH_BONE_WEIGHTS = auto()
+
     # fragment shader ones
     TEXTURE_COORDINATE = auto() # these are really in's into the fragment shader
     TEXTURE_COORDINATE_3D = auto() # these are really in's into the fragment shader
@@ -25,7 +28,17 @@ class ShaderVertexAttributeVariable(Enum):
     WORLD_SPACE_POSITION = auto()
     NORMAL = auto()
 
+    BONE_IDS = auto()
+    BONE_WEIGHTS = auto()
+
+    # texture packer
+    PASSTHROUGH_PACKED_TEXTURE_INDEX = auto()
+    PACKED_TEXTURE_INDEX = auto()
+    
+
 class ShaderType(Enum):
+    TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
+    RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TRANSFORM_V_WITH_TEXTURES = auto()
@@ -58,6 +71,11 @@ class ShaderUniformVariable(Enum):
     # Text
     CHARACTER_WIDTH = auto()      
     EDGE_TRANSITION_WIDTH = auto()
+    # Animation
+    ID_OF_BONE_TO_VISUALIZE  = auto() 
+    BONE_ANIMATION_TRANSFORMS = auto()
+    # Texture Packer
+    PACKED_TEXTURES = auto()
 
 
 @dataclass
@@ -80,6 +98,10 @@ shader_uniform_variable_to_data = {
     ShaderUniformVariable.DIFFUSE_LIGHT_POSITION: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.CHARACTER_WIDTH: ShaderUniformVariableData("float"),
     ShaderUniformVariable.EDGE_TRANSITION_WIDTH: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.ID_OF_BONE_TO_VISUALIZE: ShaderUniformVariableData("int"),
+    # note that the below is actually an array of them, still works
+    ShaderUniformVariable.BONE_ANIMATION_TRANSFORMS: ShaderUniformVariableData("mat4"), 
+    ShaderUniformVariable.PACKED_TEXTURES: ShaderUniformVariableData("sampler2DArray"), 
 }
 
 
@@ -112,10 +134,22 @@ vertex_attribute_to_configuration = {
     ShaderVertexAttributeVariable.PASSTHROUGH_NORMAL: GLVertexAttributeConfiguration("3", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_TEXTURE_COORDINATE: GLVertexAttributeConfiguration("2", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_RGB_COLOR: GLVertexAttributeConfiguration("3", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
-    ShaderVertexAttributeVariable.PASSTHROUGH_NORMAL: GLVertexAttributeConfiguration("3", "GL_FLOAT", "GL_FALSE", "0", "(void *)0")
+    ShaderVertexAttributeVariable.PASSTHROUGH_NORMAL: GLVertexAttributeConfiguration("3", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
+    # note that here we only allow for 4 bone ids per vertex, this is an arbitrary choice.
+    ShaderVertexAttributeVariable.PASSTHROUGH_BONE_IDS: GLVertexAttributeConfiguration("4", "GL_INT", "GL_FALSE", "0", "(void *)0"),
+    ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS: GLVertexAttributeConfiguration("4", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
+    ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
 }
 
 shader_catalog = {
+    ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
+        "texture_packer/bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
+        "texture_packer/textured_with_single_bone_visualization.frag",
+    ),
+    ShaderType.RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
+        "bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
+        "textured_with_single_bone_visualization.frag",
+    ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_SOLID_COLOR: ShaderProgram(
         "CWL_v_transformation.vert",
         "solid_color.frag",
@@ -190,7 +224,18 @@ shader_vertex_attribute_to_data = {
     ShaderVertexAttributeVariable.RGB_COLOR: VertexAttributeData(
         "rgb_color", "rgb_colors", "glm::vec3", "vec3"
     ),
-    # Things that are not used in the vertex shader
+    # all the bone stuff is 4 because we only allow 4 bones to inflience a vertex
+    ShaderVertexAttributeVariable.PASSTHROUGH_BONE_IDS : VertexAttributeData(
+        "bone_id", "bone_ids", "glm::ivec4", "ivec4"
+    ),
+    ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS : VertexAttributeData(
+        "bone_weight", "bone_weights", "glm::vec4", "vec4"
+    ),
+    ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX : VertexAttributeData(
+        "packed_texture_index", "packed_texture_indices", "int", "int"
+    ),
+    # Things that are not used in the vertex shader, the blanked out data is not used
+    # we pass the glsl type for type verification 
     ShaderVertexAttributeVariable.NORMAL: VertexAttributeData(
         "", "", "", "vec3"
     ),
@@ -202,4 +247,14 @@ shader_vertex_attribute_to_data = {
     ShaderVertexAttributeVariable.TEXTURE_COORDINATE_3D: VertexAttributeData(
         "", "", "", "vec3"
     ),
+    ShaderVertexAttributeVariable.BONE_IDS : VertexAttributeData(
+        "", "", "", "ivec4"
+    ),
+    ShaderVertexAttributeVariable.BONE_WEIGHTS : VertexAttributeData(
+        "", "", "", "vec4"
+    ),
+    ShaderVertexAttributeVariable.PACKED_TEXTURE_INDEX : VertexAttributeData(
+        "", "", "", "int"
+    ),
+    # BONE_WEIGHTS = auto()
 }
