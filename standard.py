@@ -3,6 +3,9 @@ from dataclasses import dataclass
 from typing import List
 
 """
+Whenever you add a new shader you need to register any new information used in here
+
+
 The identifiers used for the enums here should be the same as the 
 variables used for them in the shaders in lower case eg)
 
@@ -27,6 +30,8 @@ class ShaderVertexAttributeVariable(Enum):
     RGB_COLOR = auto()
     WORLD_SPACE_POSITION = auto()
     NORMAL = auto()
+    # ubos
+    LOCAL_TO_WORLD_INDEX = auto()
 
     BONE_IDS = auto()
     BONE_WEIGHTS = auto()
@@ -40,6 +45,7 @@ class ShaderType(Enum):
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_SOLID_COLOR = auto()
+    CWL_V_TRANSFORMATION_USING_UBOS_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TRANSFORM_V_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_LIGHTING = auto()
@@ -139,6 +145,7 @@ vertex_attribute_to_configuration = {
     ShaderVertexAttributeVariable.PASSTHROUGH_BONE_IDS: GLVertexAttributeConfiguration("4", "GL_INT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS: GLVertexAttributeConfiguration("4", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
+    ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: GLVertexAttributeConfiguration("1", " GL_UNSIGNED_INT", "GL_FALSE", "0", "(void *)0")
 }
 
 shader_catalog = {
@@ -152,6 +159,10 @@ shader_catalog = {
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_SOLID_COLOR: ShaderProgram(
         "CWL_v_transformation.vert",
+        "solid_color.frag",
+    ),
+    ShaderType.CWL_V_TRANSFORMATION_USING_UBOS_WITH_SOLID_COLOR: ShaderProgram(
+        "CWL_v_transformation_ubos.vert",
         "solid_color.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES: ShaderProgram(
@@ -236,10 +247,13 @@ shader_vertex_attribute_to_data = {
     ),
     # Things that are not used in the vertex shader, the blanked out data is not used
     # we pass the glsl type for type verification 
+    ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: VertexAttributeData(
+        "local_to_world_indices", "local_to_world_index", "unsigned int", "uint"
+    ),
+    # Things that are not used in the vertex shader
     ShaderVertexAttributeVariable.NORMAL: VertexAttributeData(
         "", "", "", "vec3"
     ),
-
     ShaderVertexAttributeVariable.WORLD_SPACE_POSITION: VertexAttributeData(
         "", "", "", "vec3"
     ),
