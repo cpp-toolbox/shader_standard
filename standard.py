@@ -42,7 +42,7 @@ class ShaderVertexAttributeVariable(Enum):
     
 
 class ShaderType(Enum):
-    TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
+    # basic
     RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_USING_UBOS_WITH_SOLID_COLOR = auto()
@@ -55,6 +55,10 @@ class ShaderType(Enum):
     TEXT = auto()
     ABSOLUTE_POSITION_WITH_COLORED_VERTEX = auto()
     TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
+
+    # texture packer
+    TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
+    TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 = auto()
 
 
 class ShaderUniformVariable(Enum):
@@ -152,6 +156,10 @@ shader_catalog = {
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
         "texture_packer/bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
         "texture_packer/textured_with_single_bone_visualization.frag",
+    ),
+    ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 : ShaderProgram(
+        "texture_packer/CWL_v_transformation_ubos_1024.vert",
+        "texture_packer/textured.frag",
     ),
     ShaderType.RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
         "bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
