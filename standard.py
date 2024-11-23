@@ -5,6 +5,9 @@ from typing import List
 """
 Whenever you add a new shader you need to register any new information used in here
 
+1. add it to the ShaderType enum
+2. set up the files in shader_catalog
+
 
 The identifiers used for the enums here should be the same as the 
 variables used for them in the shaders in lower case eg)
@@ -59,6 +62,7 @@ class ShaderType(Enum):
     # texture packer
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 = auto()
+    TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_AMBIENT_AND_DIFFUSE_LIGHTING = auto()
 
 
 class ShaderUniformVariable(Enum):
@@ -156,6 +160,10 @@ shader_catalog = {
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
         "texture_packer/bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
         "texture_packer/textured_with_single_bone_visualization.frag",
+    ),
+    ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_AMBIENT_AND_DIFFUSE_LIGHTING  : ShaderProgram(
+        "texture_packer/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
+        "texture_packer/textured_with_ambient_and_diffuse_lighting.frag",
     ),
     ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 : ShaderProgram(
         "texture_packer/CWL_v_transformation_ubos_1024.vert",
