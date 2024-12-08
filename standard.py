@@ -63,6 +63,7 @@ class ShaderType(Enum):
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 = auto()
     TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_AMBIENT_AND_DIFFUSE_LIGHTING = auto()
+    TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_MULTIPLE_LIGHTS = auto()
 
 
 class ShaderUniformVariable(Enum):
@@ -82,6 +83,37 @@ class ShaderUniformVariable(Enum):
     AMBIENT_LIGHT_STRENGTH = auto()
     AMBIENT_LIGHT_COLOR = auto()
     DIFFUSE_LIGHT_POSITION = auto()
+    # Multiple Lights
+    # spotlight
+    SPOTLIGHT_STRUCT_POSITION = auto()
+    SPOTLIGHT_STRUCT_DIRECTION = auto()
+    SPOTLIGHT_STRUCT_CUTOFF = auto()
+    SPOTLIGHT_STRUCT_OUTER_CUTOFF = auto()
+    SPOTLIGHT_STRUCT_CONSTANT = auto()
+    SPOTLIGHT_STRUCT_LINEAR = auto()
+    SPOTLIGHT_STRUCT_QUADRATIC = auto()
+    SPOTLIGHT_STRUCT_AMBIENT = auto()
+    SPOTLIGHT_STRUCT_DIFFUSE = auto()
+    SPOTLIGHT_STRUCT_SPECULAR = auto()
+
+    # pointlight
+    POINTLIGHT_STRUCT_POSITION = auto()
+    POINTLIGHT_STRUCT_CONSTANT = auto()
+    POINTLIGHT_STRUCT_LINEAR = auto()
+    POINTLIGHT_STRUCT_QUADRATIC = auto()
+    POINTLIGHT_STRUCT_AMBIENT = auto()
+    POINTLIGHT_STRUCT_DIFFUSE = auto()
+    POINTLIGHT_STRUCT_SPECULAR = auto()
+
+    # directional light
+    DIRLIGHT_STRUCT_DIRECTION = auto()
+    DIRLIGHT_STRUCT_CONSTANT = auto()
+    DIRLIGHT_STRUCT_LINEAR = auto()
+    DIRLIGHT_STRUCT_QUADRATIC = auto()
+    DIRLIGHT_STRUCT_AMBIENT = auto()
+    DIRLIGHT_STRUCT_DIFFUSE = auto()
+    DIRLIGHT_STRUCT_SPECULAR = auto()
+
     # Text
     CHARACTER_WIDTH = auto()      
     EDGE_TRANSITION_WIDTH = auto()
@@ -90,6 +122,7 @@ class ShaderUniformVariable(Enum):
     BONE_ANIMATION_TRANSFORMS = auto()
     # Texture Packer
     PACKED_TEXTURES = auto()
+
 
 
 @dataclass
@@ -116,6 +149,37 @@ shader_uniform_variable_to_data = {
     # note that the below is actually an array of them, still works
     ShaderUniformVariable.BONE_ANIMATION_TRANSFORMS: ShaderUniformVariableData("mat4"), 
     ShaderUniformVariable.PACKED_TEXTURES: ShaderUniformVariableData("sampler2DArray"), 
+
+    # spotlight
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_POSITION: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_DIRECTION: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_CUTOFF: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_OUTER_CUTOFF: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_CONSTANT: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_LINEAR: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_QUADRATIC: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_AMBIENT: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_DIFFUSE: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.SPOTLIGHT_STRUCT_SPECULAR: ShaderUniformVariableData("vec3"),
+
+    # pointlight
+    ShaderUniformVariable.POINTLIGHT_STRUCT_POSITION: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.POINTLIGHT_STRUCT_CONSTANT: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.POINTLIGHT_STRUCT_LINEAR: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.POINTLIGHT_STRUCT_QUADRATIC: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.POINTLIGHT_STRUCT_AMBIENT: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.POINTLIGHT_STRUCT_DIFFUSE: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.POINTLIGHT_STRUCT_SPECULAR: ShaderUniformVariableData("vec3"),
+
+    # directional light
+    ShaderUniformVariable.DIRLIGHT_STRUCT_DIRECTION: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.DIRLIGHT_STRUCT_CONSTANT: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.DIRLIGHT_STRUCT_LINEAR: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.DIRLIGHT_STRUCT_QUADRATIC: ShaderUniformVariableData("float"),
+    ShaderUniformVariable.DIRLIGHT_STRUCT_AMBIENT: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.DIRLIGHT_STRUCT_DIFFUSE: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.DIRLIGHT_STRUCT_SPECULAR: ShaderUniformVariableData("vec3"),
+
 }
 
 
@@ -164,6 +228,10 @@ shader_catalog = {
     ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_AMBIENT_AND_DIFFUSE_LIGHTING  : ShaderProgram(
         "texture_packer/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
         "texture_packer/textured_with_ambient_and_diffuse_lighting.frag",
+    ),
+    ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_MULTIPLE_LIGHTS  : ShaderProgram(
+        "texture_packer/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
+        "texture_packer/textured_with_multiple_lights.frag",
     ),
     ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 : ShaderProgram(
         "texture_packer/CWL_v_transformation_ubos_1024.vert",
