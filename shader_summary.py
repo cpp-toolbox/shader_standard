@@ -1,5 +1,7 @@
 from standard import *
 shader_to_used_vertex_attribute_variables = {
+    ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES: [ShaderVertexAttributeVariable.XYZ_POSITION, ShaderVertexAttributeVariable.PASSTHROUGH_TEXTURE_COORDINATE, ShaderVertexAttributeVariable.PASSTHROUGH_BONE_IDS, ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS, ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX],
+    ShaderType.RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES: [ShaderVertexAttributeVariable.XYZ_POSITION, ShaderVertexAttributeVariable.PASSTHROUGH_TEXTURE_COORDINATE, ShaderVertexAttributeVariable.PASSTHROUGH_BONE_IDS, ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS],
     ShaderType.CWL_V_TRANSFORMATION_WITH_SOLID_COLOR: [ShaderVertexAttributeVariable.XYZ_POSITION],
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES: [ShaderVertexAttributeVariable.XYZ_POSITION, ShaderVertexAttributeVariable.PASSTHROUGH_TEXTURE_COORDINATE],
     ShaderType.TRANSFORM_V_WITH_TEXTURES: [ShaderVertexAttributeVariable.XYZ_POSITION, ShaderVertexAttributeVariable.PASSTHROUGH_TEXTURE_COORDINATE],
