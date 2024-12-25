@@ -84,6 +84,12 @@ class ShaderUniformVariable(Enum):
     AMBIENT_LIGHT_COLOR = auto()
     DIFFUSE_LIGHT_POSITION = auto()
     # Multiple Lights
+
+    VIEW_POS = auto()
+    DIR_LIGHT = auto()
+    POINT_LIGHTS = auto()
+    SPOT_LIGHT = auto()
+
     # spotlight
     SPOTLIGHT_STRUCT_POSITION = auto()
     SPOTLIGHT_STRUCT_DIRECTION = auto()
@@ -115,7 +121,7 @@ class ShaderUniformVariable(Enum):
     DIRLIGHT_STRUCT_SPECULAR = auto()
 
     # Text
-    CHARACTER_WIDTH = auto()      
+    CHARACTER_WIDTH = auto()
     EDGE_TRANSITION_WIDTH = auto()
     # Animation
     ID_OF_BONE_TO_VISUALIZE  = auto() 
@@ -139,6 +145,7 @@ shader_uniform_variable_to_data = {
     ShaderUniformVariable.SKYBOX_TEXTURE_UNIT: ShaderUniformVariableData("samplerCube"),
     ShaderUniformVariable.TEXT_TEXTURE_UNIT: ShaderUniformVariableData("sampler2D"),
     ShaderUniformVariable.RGB_COLOR: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.RGB_COLOR: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.RGBA_COLOR: ShaderUniformVariableData("vec4"),
     ShaderUniformVariable.AMBIENT_LIGHT_STRENGTH: ShaderUniformVariableData("float"),
     ShaderUniformVariable.AMBIENT_LIGHT_COLOR: ShaderUniformVariableData("vec3"),
@@ -149,6 +156,12 @@ shader_uniform_variable_to_data = {
     # note that the below is actually an array of them, still works
     ShaderUniformVariable.BONE_ANIMATION_TRANSFORMS: ShaderUniformVariableData("mat4"), 
     ShaderUniformVariable.PACKED_TEXTURES: ShaderUniformVariableData("sampler2DArray"), 
+
+    # lighting
+    ShaderUniformVariable.VIEW_POS: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.DIR_LIGHT: ShaderUniformVariableData("DirLight"),
+    ShaderUniformVariable.POINT_LIGHTS: ShaderUniformVariableData("PointLight"),
+    ShaderUniformVariable.SPOT_LIGHT: ShaderUniformVariableData("SpotLight"),
 
     # spotlight
     ShaderUniformVariable.SPOTLIGHT_STRUCT_POSITION: ShaderUniformVariableData("vec3"),
@@ -222,68 +235,68 @@ vertex_attribute_to_configuration = {
 
 shader_catalog = {
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
-        "texture_packer/bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
-        "texture_packer/textured_with_single_bone_visualization.frag",
+        "out/texture_packer/bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
+        "out/texture_packer/textured_with_single_bone_visualization.frag",
     ),
     ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_AMBIENT_AND_DIFFUSE_LIGHTING  : ShaderProgram(
-        "texture_packer/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
-        "texture_packer/textured_with_ambient_and_diffuse_lighting.frag",
+        "out/texture_packer/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
+        "out/texture_packer/textured_with_ambient_and_diffuse_lighting.frag",
     ),
     ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_MULTIPLE_LIGHTS  : ShaderProgram(
-        "texture_packer/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
-        "texture_packer/textured_with_multiple_lights.frag",
+        "out/texture_packer/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
+        "out/texture_packer/textured_with_multiple_lights.frag",
     ),
     ShaderType.TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 : ShaderProgram(
-        "texture_packer/CWL_v_transformation_ubos_1024.vert",
-        "texture_packer/textured.frag",
+        "out/texture_packer/CWL_v_transformation_ubos_1024.vert",
+        "out/texture_packer/textured.frag",
     ),
     ShaderType.RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
-        "bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
-        "textured_with_single_bone_visualization.frag",
+        "out/bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
+        "out/textured_with_single_bone_visualization.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_SOLID_COLOR: ShaderProgram(
-        "CWL_v_transformation.vert",
-        "solid_color.frag",
+        "out/CWL_v_transformation.vert",
+        "out/solid_color.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_USING_UBOS_WITH_SOLID_COLOR: ShaderProgram(
-        "CWL_v_transformation_ubos.vert",
-        "solid_color.frag",
+        "out/CWL_v_transformation_ubos.vert",
+        "out/solid_color.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES: ShaderProgram(
-        "CWL_v_transformation_with_texture_coordinate_passthrough.vert",
-        "textured.frag",
+        "out/CWL_v_transformation_with_texture_coordinate_passthrough.vert",
+        "out/textured.frag",
     ),
     ShaderType.TRANSFORM_V_WITH_TEXTURES: ShaderProgram(
-        "transform_v_with_texture_coordinate_passthrough.vert",
-        "textured.frag",
+        "out/transform_v_with_texture_coordinate_passthrough.vert",
+        "out/textured.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_LIGHTING: ShaderProgram(
-        "CWL_v_transformation_with_texture_coordinate_passthrough.vert",
-        "textured_with_ambient_lighting.frag",
+        "out/CWL_v_transformation_with_texture_coordinate_passthrough.vert",
+        "out/textured_with_ambient_lighting.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_AND_DIFFUSE_LIGHTING: ShaderProgram(
-        "CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
-        "textured_with_ambient_and_diffuse_lighting.frag",
+        "out/CWL_v_transformation_with_texture_coordinate_and_normal_passthrough.vert",
+        "out/textured_with_ambient_and_diffuse_lighting.frag",
     ),
     ShaderType.SKYBOX: ShaderProgram(
-        "cubemap.vert", 
-        "cubemap.frag"
+        "out/cubemap.vert", 
+        "out/cubemap.frag"
     ),
     ShaderType.ABSOLUTE_POSITION_WITH_SOLID_COLOR: ShaderProgram(
-        "absolute_position.vert",
-        "solid_color.frag",
+        "out/absolute_position.vert",
+        "out/solid_color.frag",
     ),
     ShaderType.TEXT: ShaderProgram(
-        "text.vert", 
-        "text.frag"
+        "out/text.vert", 
+        "out/text.frag"
     ),
     ShaderType.ABSOLUTE_POSITION_WITH_COLORED_VERTEX: ShaderProgram(
-        "colored_vertices.vert",
-        "colored_vertices.frag",
+        "out/colored_vertices.vert",
+        "out/colored_vertices.frag",
     ),
     ShaderType.TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT: ShaderProgram(
-        "transform_v_with_texture_coordinate_passthrough.vert",
-        "signed_distance_field_text.frag"
+        "out/transform_v_with_texture_coordinate_passthrough.vert",
+        "out/signed_distance_field_text.frag"
     )
 }
 
