@@ -57,6 +57,7 @@ class ShaderType(Enum):
     ABSOLUTE_POSITION_WITH_SOLID_COLOR = auto()
     TEXT = auto()
     ABSOLUTE_POSITION_WITH_COLORED_VERTEX = auto()
+    ABSOLUTE_POSITION_TEXTURED = auto()
     TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
 
     # texture packer
@@ -299,6 +300,10 @@ shader_catalog = {
     ShaderType.ABSOLUTE_POSITION_WITH_COLORED_VERTEX: ShaderProgram(
         "out/colored_vertices.vert",
         "out/colored_vertices.frag",
+    ),
+    ShaderType.ABSOLUTE_POSITION_TEXTURED: ShaderProgram(
+        "out/absolute_position_textured.vert",
+        "out/textured.frag",
     ),
     ShaderType.TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT: ShaderProgram(
         "out/transform_v_with_texture_coordinate_passthrough.vert",
