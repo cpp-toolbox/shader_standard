@@ -16,6 +16,7 @@ XYZ_POSITION -> xyz_position
 
 """
 
+# from what I can tell we only need to list the vertex shader ones here
 class ShaderVertexAttributeVariable(Enum):
     # vertex shader ones
     INDEX = auto()
@@ -42,6 +43,8 @@ class ShaderVertexAttributeVariable(Enum):
     # texture packer
     PASSTHROUGH_PACKED_TEXTURE_INDEX = auto()
     PACKED_TEXTURE_INDEX = auto()
+    PASSTHROUGH_PACKED_TEXTURE_BOUNDING_BOX_INDEX = auto()
+    PACKED_TEXTURE_BOUNDING_BOX_INDEX = auto()
     
 
 class ShaderType(Enum):
@@ -60,6 +63,7 @@ class ShaderType(Enum):
     TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
 
     # texture packer
+    CWL_V_TRANSFORMATION_TEXTURE_PACKED = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_1024_WITH_TEXTURES_AND_MULTIPLE_LIGHTS = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_2048_WITH_TEXTURES_AND_MULTIPLE_LIGHTS = auto()
@@ -131,7 +135,7 @@ class ShaderUniformVariable(Enum):
     BONE_ANIMATION_TRANSFORMS = auto()
     # Texture Packer
     PACKED_TEXTURES = auto()
-
+    PACKED_TEXTURE_BOUNDING_BOXES = auto()
 
 
 @dataclass
@@ -159,6 +163,9 @@ shader_uniform_variable_to_data = {
     # note that the below is actually an array of them, still works
     ShaderUniformVariable.BONE_ANIMATION_TRANSFORMS: ShaderUniformVariableData("mat4"), 
     ShaderUniformVariable.PACKED_TEXTURES: ShaderUniformVariableData("sampler2DArray"), 
+
+    # this is actually an array
+    ShaderUniformVariable.PACKED_TEXTURE_BOUNDING_BOXES: ShaderUniformVariableData("vec4"),  
 
     # lighting
     ShaderUniformVariable.VIEW_POS: ShaderUniformVariableData("vec3"),
@@ -222,6 +229,7 @@ class GLVertexAttributeConfiguration:
     pointer_to_start_of_data: str
 
 # only things in the vertex shader need a binding to opengl and thus only need a configuration
+# 
 vertex_attribute_to_configuration = {
     ShaderVertexAttributeVariable.XYZ_POSITION: GLVertexAttributeConfiguration("3", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.XY_POSITION: GLVertexAttributeConfiguration("2", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
@@ -233,6 +241,7 @@ vertex_attribute_to_configuration = {
     ShaderVertexAttributeVariable.PASSTHROUGH_BONE_IDS: GLVertexAttributeConfiguration("4", "GL_INT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS: GLVertexAttributeConfiguration("4", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
+    ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_BOUNDING_BOX_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: GLVertexAttributeConfiguration("1", " GL_UNSIGNED_INT", "GL_FALSE", "0", "(void *)0")
 }
 
@@ -240,6 +249,10 @@ shader_catalog = {
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_1024_WITH_TEXTURES_AND_MULTIPLE_LIGHTS : ShaderProgram("out/texture_packer/bone_and_CWL_v_transformation_ubos_1024_with_lighting_data_passthrough.vert", "out/texture_packer/textured_with_multiple_lights.frag"),
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_2048_WITH_TEXTURES_AND_MULTIPLE_LIGHTS : ShaderProgram("out/texture_packer/bone_and_CWL_v_transformation_ubos_2048_with_lighting_data_passthrough.vert", "out/texture_packer/textured_with_multiple_lights.frag"),
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_4096_WITH_TEXTURES_AND_MULTIPLE_LIGHTS : ShaderProgram("out/texture_packer/bone_and_CWL_v_transformation_ubos_4096_with_lighting_data_passthrough.vert", "out/texture_packer/textured_with_multiple_lights.frag"),
+    ShaderType.CWL_V_TRANSFORMATION_TEXTURE_PACKED : ShaderProgram(
+        "out/texture_packer/CWL_v_transformation_texture_packed_passthrough.vert",
+        "out/texture_packer/textured.frag",
+    ),
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES : ShaderProgram(
         "out/texture_packer/bone_and_CWL_v_transformation_with_texture_coordinate_and_bone_data_passthrough.vert",
         "out/texture_packer/textured_with_single_bone_visualization.frag",
@@ -348,6 +361,9 @@ shader_vertex_attribute_to_data = {
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX : VertexAttributeData(
         "packed_texture_index", "packed_texture_indices", "int", "int"
     ),
+    ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_BOUNDING_BOX_INDEX : VertexAttributeData(
+        "packed_texture_bounding_box_index", "packed_texture_bounding_box_indices", "int", "int"
+    ),
     # Things that are not used in the vertex shader, the blanked out data is not used
     # we pass the glsl type for type verification 
     ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: VertexAttributeData(
@@ -371,6 +387,9 @@ shader_vertex_attribute_to_data = {
         "", "", "", "vec4"
     ),
     ShaderVertexAttributeVariable.PACKED_TEXTURE_INDEX : VertexAttributeData(
+        "", "", "", "int"
+    ),
+    ShaderVertexAttributeVariable.PACKED_TEXTURE_BOUNDING_BOX_INDEX : VertexAttributeData(
         "", "", "", "int"
     ),
     # BONE_WEIGHTS = auto()
