@@ -67,7 +67,7 @@ class ShaderType(Enum):
     CWL_V_TRANSFORMATION_TEXTURE_PACKED = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_1024_WITH_TEXTURES_AND_MULTIPLE_LIGHTS = auto()
-    TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_2048_WITH_TEXTURES_AND_MULTIPLE_LIGHTS = auto()
+    TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_1024_WITH_TEXTURES = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_4096_WITH_TEXTURES_AND_MULTIPLE_LIGHTS = auto()
     TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024 = auto()
     TEXTURE_PACKER_CWL_V_TRANSFORMATION_UBOS_1024_AMBIENT_AND_DIFFUSE_LIGHTING = auto()
@@ -248,7 +248,7 @@ vertex_attribute_to_configuration = {
 
 shader_catalog = {
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_1024_WITH_TEXTURES_AND_MULTIPLE_LIGHTS : ShaderProgram("out/texture_packer/bone_and_CWL_v_transformation_ubos_1024_with_lighting_data_passthrough.vert", "out/texture_packer/textured_with_multiple_lights.frag"),
-    ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_2048_WITH_TEXTURES_AND_MULTIPLE_LIGHTS : ShaderProgram("out/texture_packer/bone_and_CWL_v_transformation_ubos_2048_with_lighting_data_passthrough.vert", "out/texture_packer/textured_with_multiple_lights.frag"),
+    ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_1024_WITH_TEXTURES : ShaderProgram("out/texture_packer/bone_and_CWL_v_transformation_ubos_1024.vert", "out/texture_packer/textured.frag"),
     ShaderType.TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_UBOS_4096_WITH_TEXTURES_AND_MULTIPLE_LIGHTS : ShaderProgram("out/texture_packer/bone_and_CWL_v_transformation_ubos_4096_with_lighting_data_passthrough.vert", "out/texture_packer/textured_with_multiple_lights.frag"),
     ShaderType.CWL_V_TRANSFORMATION_TEXTURE_PACKED : ShaderProgram(
         "out/texture_packer/CWL_v_transformation_texture_packed_passthrough.vert",
