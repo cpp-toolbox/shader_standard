@@ -72,24 +72,26 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);
 #### TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT
 To set up this shader be sure to do the following:
 ```cpp
-auto text_color = glm::vec3(0.5, 0.5, 1);
-float char_width = 0.5;
-float edge_transition = 0.1;
+void setup_sdf_shader_uniforms(ShaderCache &shader_cache) {
+    auto text_color = glm::vec3(0.5, 0.5, 1);
+    float char_width = 0.5;
+    float edge_transition = 0.1;
 
-shader_cache.use_shader_program(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT);
+    shader_cache.use_shader_program(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT);
 
-shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, ShaderUniformVariable::TRANSFORM,
-                         glm::mat4(1.0f));
+    shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, ShaderUniformVariable::TRANSFORM,
+                             glm::mat4(1.0f));
 
-shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, ShaderUniformVariable::RGB_COLOR,
-                         text_color);
+    shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT, ShaderUniformVariable::RGB_COLOR,
+                             text_color);
 
-shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT,
-                         ShaderUniformVariable::CHARACTER_WIDTH, char_width);
+    shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT,
+                             ShaderUniformVariable::CHARACTER_WIDTH, char_width);
 
-shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT,
-                         ShaderUniformVariable::EDGE_TRANSITION_WIDTH, edge_transition);
-shader_cache.stop_using_shader_program();
+    shader_cache.set_uniform(ShaderType::TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT,
+                             ShaderUniformVariable::EDGE_TRANSITION_WIDTH, edge_transition);
+    shader_cache.stop_using_shader_program();
+}
 ```
 
 
