@@ -166,7 +166,8 @@ shader_uniform_variable_to_data = {
     ShaderUniformVariable.PACKED_TEXTURES: ShaderUniformVariableData("sampler2DArray"), 
 
     # this is actually an array
-    ShaderUniformVariable.PACKED_TEXTURE_BOUNDING_BOXES: ShaderUniformVariableData("vec4"),  
+    # ShaderUniformVariable.PACKED_TEXTURE_BOUNDING_BOXES: ShaderUniformVariableData("vec4"),  
+    ShaderUniformVariable.PACKED_TEXTURE_BOUNDING_BOXES: ShaderUniformVariableData("sampler1D"),  
 
     # lighting
     ShaderUniformVariable.VIEW_POS: ShaderUniformVariableData("vec3"),
