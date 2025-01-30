@@ -8,12 +8,10 @@ Whenever you add a new shader you need to register any new information used in h
 1. add it to the ShaderType enum
 2. set up the files in shader_catalog
 
-
 The identifiers used for the enums here should be the same as the 
 variables used for them in the shaders in lower case eg)
 
 XYZ_POSITION -> xyz_position
-
 """
 
 # from what I can tell we only need to list the vertex shader ones here
