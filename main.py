@@ -144,124 +144,129 @@ def validate_all_shaders(shader_catalog, shader_directory, verbose: bool, output
     return shader_info
 
 def generate_cpp(shader_info):
-    cpp_output = []
+    hpp_output = []
 
-    cpp_output.append("#ifndef SHADER_STANDARD_HPP")
-    cpp_output.append("#define SHADER_STANDARD_HPP")
-    cpp_output.append("#include <unordered_map>")
-    cpp_output.append("#include <string>")
-    cpp_output.append("#include <vector>")
-    cpp_output.append("#include <glad/glad.h>")
-    cpp_output.append("")
+    hpp_output.append("#ifndef SHADER_STANDARD_HPP")
+    hpp_output.append("#define SHADER_STANDARD_HPP")
+    hpp_output.append("#include <unordered_map>")
+    hpp_output.append("#include <string>")
+    hpp_output.append("#include <vector>")
+    hpp_output.append("#include <glad/glad.h>")
 
-    cpp_output.append("enum class ShaderType {")
+    hpp_output.append("")
+
+    hpp_output.append("enum class ShaderType {")
     for shader_type in ShaderType:
-        cpp_output.append(f"    {shader_type.name},")
-    cpp_output.append("};")
-    cpp_output.append("")
+        hpp_output.append(f"    {shader_type.name},")
+    hpp_output.append("};")
+
+    hpp_output.append("")
+    hpp_output.append("std::string shader_type_to_string(ShaderType shader_type);")
+    hpp_output.append("")
+
 
     # ShaderVertexAttributeVariable enum
-    cpp_output.append("enum class ShaderVertexAttributeVariable {")
+    hpp_output.append("enum class ShaderVertexAttributeVariable {")
     for attribute in ShaderVertexAttributeVariable:
         if attribute != ShaderVertexAttributeVariable.INDEX:  # Exclude INDEX
-            cpp_output.append(f"    {attribute.name},")
-    cpp_output.append("};")
-    cpp_output.append("")
+            hpp_output.append(f"    {attribute.name},")
+    hpp_output.append("};")
+    hpp_output.append("")
 
     # ShaderUniformVariable enum
-    cpp_output.append("enum class ShaderUniformVariable {")
+    hpp_output.append("enum class ShaderUniformVariable {")
     for uniform in ShaderUniformVariable:
-        cpp_output.append(f"    {uniform.name},")
-    cpp_output.append("};")
-    cpp_output.append("")
+        hpp_output.append(f"    {uniform.name},")
+    hpp_output.append("};")
+    hpp_output.append("")
 
     # ShaderCreationInfo struct
-    cpp_output.append("struct ShaderCreationInfo {")
-    cpp_output.append("    std::string vertex_path;")
-    cpp_output.append("    std::string fragment_path;")
-    cpp_output.append("    std::string geometry_path;")
-    cpp_output.append("};")
-    cpp_output.append("")
+    hpp_output.append("struct ShaderCreationInfo {")
+    hpp_output.append("    std::string vertex_path;")
+    hpp_output.append("    std::string fragment_path;")
+    hpp_output.append("    std::string geometry_path;")
+    hpp_output.append("};")
+    hpp_output.append("")
 
     # ShaderProgramInfo struct
-    cpp_output.append("struct ShaderProgramInfo {")
-    cpp_output.append("    GLuint id;")
-    cpp_output.append("};")
-    cpp_output.append("")
+    hpp_output.append("struct ShaderProgramInfo {")
+    hpp_output.append("    GLuint id;")
+    hpp_output.append("};")
+    hpp_output.append("")
 
     # GLVertexAttributeConfiguration struct
-    cpp_output.append("struct GLVertexAttributeConfiguration {")
-    cpp_output.append("    GLint components_per_vertex;")
-    cpp_output.append("    GLenum data_type_of_component;")
-    cpp_output.append("    GLboolean normalize;")
-    cpp_output.append("    GLsizei stride;")
-    cpp_output.append("    GLvoid *pointer_to_start_of_data;")
-    cpp_output.append("};")
-    cpp_output.append("")
+    hpp_output.append("struct GLVertexAttributeConfiguration {")
+    hpp_output.append("    GLint components_per_vertex;")
+    hpp_output.append("    GLenum data_type_of_component;")
+    hpp_output.append("    GLboolean normalize;")
+    hpp_output.append("    GLsizei stride;")
+    hpp_output.append("    GLvoid *pointer_to_start_of_data;")
+    hpp_output.append("};")
+    hpp_output.append("")
 
     # Start class definition
-    cpp_output.append("class ShaderStandard {")
-    cpp_output.append("public:")
-    cpp_output.append("    std::unordered_map<ShaderVertexAttributeVariable, GLVertexAttributeConfiguration> shader_vertex_attribute_to_glva_configuration;")
-    cpp_output.append("    std::unordered_map<ShaderUniformVariable, std::string> shader_uniform_variable_to_name;")
-    cpp_output.append("    std::unordered_map<ShaderVertexAttributeVariable, std::string> shader_vertex_attribute_variable_to_name;")
-    cpp_output.append("    std::unordered_map<ShaderType, std::string> shader_type_to_name;")
-    cpp_output.append("    std::unordered_map<ShaderType, ShaderCreationInfo> shader_catalog;")
+    hpp_output.append("class ShaderStandard {")
+    hpp_output.append("public:")
+    hpp_output.append("    std::unordered_map<ShaderVertexAttributeVariable, GLVertexAttributeConfiguration> shader_vertex_attribute_to_glva_configuration;")
+    hpp_output.append("    std::unordered_map<ShaderUniformVariable, std::string> shader_uniform_variable_to_name;")
+    hpp_output.append("    std::unordered_map<ShaderVertexAttributeVariable, std::string> shader_vertex_attribute_variable_to_name;")
+    hpp_output.append("    std::unordered_map<ShaderType, std::string> shader_type_to_name;")
+    hpp_output.append("    std::unordered_map<ShaderType, ShaderCreationInfo> shader_catalog;")
     
     # New variables for used vertex attributes and uniforms
-    cpp_output.append("    std::unordered_map<ShaderType, std::vector<ShaderVertexAttributeVariable>> shader_to_used_vertex_attribute_variables;")
-    cpp_output.append("    std::unordered_map<ShaderType, std::vector<ShaderUniformVariable>> shader_to_used_uniform_variable;")
-    cpp_output.append("")
+    hpp_output.append("    std::unordered_map<ShaderType, std::vector<ShaderVertexAttributeVariable>> shader_to_used_vertex_attribute_variables;")
+    hpp_output.append("    std::unordered_map<ShaderType, std::vector<ShaderUniformVariable>> shader_to_used_uniform_variable;")
+    hpp_output.append("")
 
-    cpp_output.append("    ShaderStandard() {")
-    cpp_output.append("        shader_vertex_attribute_to_glva_configuration = {")
+    hpp_output.append("    ShaderStandard() {")
+    hpp_output.append("        shader_vertex_attribute_to_glva_configuration = {")
     for attribute, config in vertex_attribute_to_configuration.items():
         if attribute != ShaderVertexAttributeVariable.INDEX:  # Exclude INDEX
-            cpp_output.append(f"            {{ShaderVertexAttributeVariable::{attribute.name}, GLVertexAttributeConfiguration{{{config.components_per_vertex}, {config.data_type_of_component}, {config.normalize}, {config.stride}, {config.pointer_to_start_of_data}}}}},")
-    cpp_output.append("        };")
+            hpp_output.append(f"            {{ShaderVertexAttributeVariable::{attribute.name}, GLVertexAttributeConfiguration{{{config.components_per_vertex}, {config.data_type_of_component}, {config.normalize}, {config.stride}, {config.pointer_to_start_of_data}}}}},")
+    hpp_output.append("        };")
 
-    cpp_output.append("        shader_uniform_variable_to_name = {")
+    hpp_output.append("        shader_uniform_variable_to_name = {")
     for uniform in ShaderUniformVariable:
-        cpp_output.append(f"            {{ShaderUniformVariable::{uniform.name}, \"{uniform.name.lower()}\"}},")
-    cpp_output.append("        };")
+        hpp_output.append(f"            {{ShaderUniformVariable::{uniform.name}, \"{uniform.name.lower()}\"}},")
+    hpp_output.append("        };")
 
-    cpp_output.append("        shader_vertex_attribute_variable_to_name = {")
+    hpp_output.append("        shader_vertex_attribute_variable_to_name = {")
     for attribute in ShaderVertexAttributeVariable:
         if attribute in vertex_attribute_to_configuration.keys():
-            cpp_output.append(f"            {{ShaderVertexAttributeVariable::{attribute.name}, \"{attribute.name.lower()}\"}},")
-    cpp_output.append("        };")
+            hpp_output.append(f"            {{ShaderVertexAttributeVariable::{attribute.name}, \"{attribute.name.lower()}\"}},")
+    hpp_output.append("        };")
 
-    cpp_output.append("        shader_type_to_name = {")
+    hpp_output.append("        shader_type_to_name = {")
     for shader_type in ShaderType:
-        cpp_output.append(f"            {{ShaderType::{shader_type.name}, \"{shader_type.name.lower()}\"}},")
-    cpp_output.append("        };")
+        hpp_output.append(f"            {{ShaderType::{shader_type.name}, \"{shader_type.name.lower()}\"}},")
+    hpp_output.append("        };")
  
 
-    cpp_output.append("        shader_catalog = {")
+    hpp_output.append("        shader_catalog = {")
     for shader_type, prog in shader_catalog.items():
-        cpp_output.append(f"            {{ShaderType::{shader_type.name}, {{\"assets/shaders/{prog.vertex_shader_filename}\", \"assets/shaders/{prog.fragment_shader_filename}\"}}}},")
-    cpp_output.append("        };")
+        hpp_output.append(f"            {{ShaderType::{shader_type.name}, {{\"assets/shaders/{prog.vertex_shader_filename}\", \"assets/shaders/{prog.fragment_shader_filename}\"}}}},")
+    hpp_output.append("        };")
 
     # Generate shader_to_used_vertex_attribute_variables
-    cpp_output.append("        shader_to_used_vertex_attribute_variables = {")
+    hpp_output.append("        shader_to_used_vertex_attribute_variables = {")
     for shader_type, variables in shader_info.items():
         attributes = ', '.join(f"ShaderVertexAttributeVariable::{attr}" for attr in variables['valid_attributes'])
-        cpp_output.append(f"            {{ShaderType::{shader_type.name}, {{{attributes}}}}},")
-    cpp_output.append("        };")
+        hpp_output.append(f"            {{ShaderType::{shader_type.name}, {{{attributes}}}}},")
+    hpp_output.append("        };")
 
     # Generate shader_to_used_uniform_variable
-    cpp_output.append("        shader_to_used_uniform_variable = {")
+    hpp_output.append("        shader_to_used_uniform_variable = {")
     for shader_type, variables in shader_info.items():
         uniforms = ', '.join(f"ShaderUniformVariable::{uniform}" for uniform in variables['valid_uniforms'])
-        cpp_output.append(f"            {{ShaderType::{shader_type.name}, {{{uniforms}}}}},")
-    cpp_output.append("        };")
+        hpp_output.append(f"            {{ShaderType::{shader_type.name}, {{{uniforms}}}}},")
+    hpp_output.append("        };")
 
-    cpp_output.append("    }")
+    hpp_output.append("    }")
 
     # End class definition
-    cpp_output.append("};")
+    hpp_output.append("};")
 
-    cpp_output.append("#endif // SHADER_STANDARD_HPP")
+    hpp_output.append("#endif // SHADER_STANDARD_HPP")
 
     # Define the output directory (script directory)
     output_directory = os.path.dirname(os.path.abspath(__file__))
@@ -269,7 +274,33 @@ def generate_cpp(shader_info):
     # Write to output header file
     header_file_path = os.path.join(output_directory, "shader_standard.hpp")
     with open(header_file_path, "w") as hpp_file:
-        hpp_file.write("\n".join(cpp_output))
+        hpp_file.write("\n".join(hpp_output))
+
+    cpp_output = []
+    cpp_output.append('#include "shader_standard.hpp"')
+    cpp_output.append("#include <stdexcept>")
+    cpp_output.append("")
+    cpp_output.append("std::string shader_type_to_string(ShaderType shader_type) {")
+    cpp_output.append("    static const std::unordered_map<ShaderType, std::string> shader_type_map = {")
+    for shader_type in ShaderType:
+        cpp_output.append(f'        {{ShaderType::{shader_type.name}, "{shader_type.name.lower()}"}},')
+    cpp_output.append("    };")
+    cpp_output.append("")
+    cpp_output.append("    auto it = shader_type_map.find(shader_type);")
+    cpp_output.append("    if (it != shader_type_map.end()) {")
+    cpp_output.append("        return it->second;")
+    cpp_output.append("    } else {")
+    cpp_output.append('        throw std::invalid_argument("Invalid ShaderType enum value.");')
+    cpp_output.append("    }")
+    cpp_output.append("}")
+
+    # Define the output directory (script directory)
+    output_directory = os.path.dirname(os.path.abspath(__file__))
+
+    # Write to output header file
+    source_file_path = os.path.join(output_directory, "shader_standard.cpp")
+    with open(source_file_path, "w") as cpp_file:
+        cpp_file.write("\n".join(cpp_output))
 
 def generate_py_shader_summary(shader_info):
     py_output = []  # List to accumulate output lines
