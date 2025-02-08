@@ -53,12 +53,18 @@ class ShaderType(Enum):
     RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_WITH_COLORED_VERTEX = auto()
+
     CWL_V_TRANSFORMATION_USING_UBOS_WITH_SOLID_COLOR = auto()
+    CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX = auto()
+    CWL_V_TRANSFORMATION_UBOS_1024_WITH_OBJECT_ID = auto()
+
     CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TRANSFORM_V_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_OBJECT_ID = auto()
+
     CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_LIGHTING = auto()
     CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_AND_DIFFUSE_LIGHTING = auto()
+
     SKYBOX = auto()
     ABSOLUTE_POSITION_WITH_SOLID_COLOR = auto()
     TEXT = auto()
@@ -290,6 +296,14 @@ shader_catalog = {
     ShaderType.CWL_V_TRANSFORMATION_USING_UBOS_WITH_SOLID_COLOR: ShaderProgram(
         "out/CWL_v_transformation_ubos.vert",
         "out/solid_color.frag",
+    ),
+    ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX: ShaderProgram(
+        "out/CWL_v_transformation_ubos_1024_with_colored_vertex.vert",
+        "out/colored_vertices.frag",
+    ),
+    ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_OBJECT_ID: ShaderProgram(
+        "out/CWL_v_transformation_ubos_1024_with_object_id_passthrough.vert",
+        "out/object_id.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES: ShaderProgram(
         "out/CWL_v_transformation_with_texture_coordinate_passthrough.vert",
