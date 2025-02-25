@@ -61,6 +61,7 @@ class ShaderType(Enum):
     ABSOLUTE_POSITION_WITH_COLORED_VERTEX = auto()
     ABSOLUTE_POSITION_TEXTURED = auto()
     TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
+    ABSOLUTE_POSITION_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
 
     # texture packer
     CWL_V_TRANSFORMATION_TEXTURE_PACKED = auto()
@@ -79,6 +80,7 @@ class ShaderUniformVariable(Enum):
     WORLD_TO_CAMERA = auto()
     LOCAL_TO_WORLD = auto()
     TRANSFORM = auto()
+    ASPECT_RATIO = auto()
     # Textures
     TEXTURE_SAMPLER = auto()
     SKYBOX_TEXTURE_UNIT = auto()
@@ -148,6 +150,7 @@ shader_uniform_variable_to_data = {
     ShaderUniformVariable.WORLD_TO_CAMERA: ShaderUniformVariableData("mat4"),
     ShaderUniformVariable.LOCAL_TO_WORLD: ShaderUniformVariableData("mat4"),
     ShaderUniformVariable.TRANSFORM: ShaderUniformVariableData("mat4"),
+    ShaderUniformVariable.ASPECT_RATIO: ShaderUniformVariableData("vec2"),
     ShaderUniformVariable.TEXTURE_SAMPLER: ShaderUniformVariableData("sampler2D"),
     ShaderUniformVariable.SKYBOX_TEXTURE_UNIT: ShaderUniformVariableData("samplerCube"),
     ShaderUniformVariable.TEXT_TEXTURE_UNIT: ShaderUniformVariableData("sampler2D"),
@@ -324,6 +327,10 @@ shader_catalog = {
     ),
     ShaderType.TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT: ShaderProgram(
         "out/transform_v_with_texture_coordinate_passthrough.vert",
+        "out/signed_distance_field_text.frag"
+    ),
+    ShaderType.ABSOLUTE_POSITION_WITH_SIGNED_DISTANCE_FIELD_TEXT: ShaderProgram(
+        "out/absolute_position_textured.vert",
         "out/signed_distance_field_text.frag"
     )
 }
