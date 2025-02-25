@@ -25,6 +25,7 @@ class ShaderVertexAttributeVariable(Enum):
     PASSTHROUGH_NORMAL = auto()
     PASSTHROUGH_BONE_IDS = auto()
     PASSTHROUGH_BONE_WEIGHTS = auto()
+    PASSTHROUGH_OBJECT_ID = auto()
 
     # fragment shader ones
     TEXTURE_COORDINATE = auto() # these are really in's into the fragment shader
@@ -38,6 +39,8 @@ class ShaderVertexAttributeVariable(Enum):
     BONE_IDS = auto()
     BONE_WEIGHTS = auto()
 
+    OBJECT_ID = auto()
+
     # texture packer
     PASSTHROUGH_PACKED_TEXTURE_INDEX = auto()
     PACKED_TEXTURE_INDEX = auto()
@@ -50,11 +53,18 @@ class ShaderType(Enum):
     RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_WITH_COLORED_VERTEX = auto()
+
     CWL_V_TRANSFORMATION_USING_UBOS_WITH_SOLID_COLOR = auto()
+    CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX = auto()
+    CWL_V_TRANSFORMATION_UBOS_1024_WITH_OBJECT_ID = auto()
+
     CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     TRANSFORM_V_WITH_TEXTURES = auto()
+    CWL_V_TRANSFORMATION_WITH_OBJECT_ID = auto()
+
     CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_LIGHTING = auto()
     CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_AND_DIFFUSE_LIGHTING = auto()
+
     SKYBOX = auto()
     ABSOLUTE_POSITION_WITH_SOLID_COLOR = auto()
     TEXT = auto()
@@ -232,8 +242,8 @@ class GLVertexAttributeConfiguration:
     stride: str
     pointer_to_start_of_data: str
 
-# only things in the vertex shader need a binding to opengl and thus only need a configuration
-# 
+
+# NOTE: only things in the vertex shader need a binding to opengl and thus only need a configuration
 vertex_attribute_to_configuration = {
     ShaderVertexAttributeVariable.XYZ_POSITION: GLVertexAttributeConfiguration("3", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.XY_POSITION: GLVertexAttributeConfiguration("2", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
@@ -246,7 +256,8 @@ vertex_attribute_to_configuration = {
     ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS: GLVertexAttributeConfiguration("4", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_BOUNDING_BOX_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
-    ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: GLVertexAttributeConfiguration("1", " GL_UNSIGNED_INT", "GL_FALSE", "0", "(void *)0")
+    ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: GLVertexAttributeConfiguration("1", " GL_UNSIGNED_INT", "GL_FALSE", "0", "(void *)0"),
+    ShaderVertexAttributeVariable.PASSTHROUGH_OBJECT_ID: GLVertexAttributeConfiguration("1", " GL_UNSIGNED_INT", "GL_FALSE", "0", "(void *)0")
 }
 
 shader_catalog = {
@@ -289,6 +300,14 @@ shader_catalog = {
         "out/CWL_v_transformation_ubos.vert",
         "out/solid_color.frag",
     ),
+    ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX: ShaderProgram(
+        "out/CWL_v_transformation_ubos_1024_with_colored_vertex.vert",
+        "out/colored_vertices.frag",
+    ),
+    ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_OBJECT_ID: ShaderProgram(
+        "out/CWL_v_transformation_ubos_1024_with_object_id_passthrough.vert",
+        "out/object_id.frag",
+    ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES: ShaderProgram(
         "out/CWL_v_transformation_with_texture_coordinate_passthrough.vert",
         "out/textured.frag",
@@ -296,6 +315,10 @@ shader_catalog = {
     ShaderType.TRANSFORM_V_WITH_TEXTURES: ShaderProgram(
         "out/transform_v_with_texture_coordinate_passthrough.vert",
         "out/textured.frag",
+    ),
+    ShaderType.CWL_V_TRANSFORMATION_WITH_OBJECT_ID: ShaderProgram(
+        "out/CWL_v_transformation_with_object_id_passthrough.vert",
+        "out/object_id.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_LIGHTING: ShaderProgram(
         "out/CWL_v_transformation_with_texture_coordinate_passthrough.vert",
@@ -335,6 +358,8 @@ shader_catalog = {
     )
 }
 
+
+# NOTE: this information is used for variables in the batcher
 shader_vertex_attribute_to_data = {
     # note that index is never going to be in a GLSL program so we don't specify the glsl type
     ShaderVertexAttributeVariable.INDEX: VertexAttributeData(
@@ -380,12 +405,21 @@ shader_vertex_attribute_to_data = {
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_BOUNDING_BOX_INDEX : VertexAttributeData(
         "packed_texture_bounding_box_index", "packed_texture_bounding_box_indices", "int", "int"
     ),
+    ShaderVertexAttributeVariable.PASSTHROUGH_OBJECT_ID: VertexAttributeData(
+        "object_id", "object_ids", "unsigned int", "uint"
+    ),
     # Things that are not used in the vertex shader, the blanked out data is not used
     # we pass the glsl type for type verification 
     ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: VertexAttributeData(
         "local_to_world_indices", "local_to_world_index", "unsigned int", "uint"
     ),
-    # Things that are not used in the vertex shader
+    # NOTE: we are registering these varaibles here because these are usually the varaibles
+    # that get passed the data from a passthrough and are only in the fragment shader
+    # since they don't require a direct connection to opengl we may omit everying except the
+    # glsl type which allows for verification in the standard
+    ShaderVertexAttributeVariable.OBJECT_ID: VertexAttributeData(
+        "", "", "", "uint"
+    ),
     ShaderVertexAttributeVariable.NORMAL: VertexAttributeData(
         "", "", "", "vec3"
     ),
