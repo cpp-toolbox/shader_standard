@@ -53,6 +53,7 @@ class ShaderType(Enum):
     RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_WITH_COLORED_VERTEX = auto()
+    CW_V_TRANSFORMATION_WITH_COLORED_VERTEX = auto()
 
     CWL_V_TRANSFORMATION_UBOS_1024_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX = auto()
@@ -66,8 +67,9 @@ class ShaderType(Enum):
     CWL_V_TRANSFORMATION_WITH_TEXTURES_AMBIENT_AND_DIFFUSE_LIGHTING = auto()
 
     SKYBOX = auto()
-    ABSOLUTE_POSITION_WITH_SOLID_COLOR = auto()
     TEXT = auto()
+    # these are actual 2d shaders and I should rename this in the future
+    ABSOLUTE_POSITION_WITH_SOLID_COLOR = auto()
     ABSOLUTE_POSITION_WITH_COLORED_VERTEX = auto()
     ABSOLUTE_POSITION_TEXTURED = auto()
     TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
@@ -294,6 +296,10 @@ shader_catalog = {
     ),
     ShaderType.CWL_V_TRANSFORMATION_WITH_COLORED_VERTEX: ShaderProgram(
         "out/CWL_v_transformation_with_colored_vertices.vert",
+        "out/colored_vertices.frag",
+    ),
+    ShaderType.CW_V_TRANSFORMATION_WITH_COLORED_VERTEX: ShaderProgram(
+        "out/CW_v_transformation_with_colored_vertices.vert",
         "out/colored_vertices.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_SOLID_COLOR: ShaderProgram(
