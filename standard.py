@@ -75,6 +75,10 @@ class ShaderType(Enum):
     TRANSFORM_V_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
     ABSOLUTE_POSITION_WITH_SIGNED_DISTANCE_FIELD_TEXT = auto()
 
+    # deferred lighting
+    CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX_DEFERED_LIGHTING_FRAMEBUFFERS = auto()
+    DEFERRED_LIGHTING = auto()
+
     # texture packer
     CWL_V_TRANSFORMATION_TEXTURE_PACKED = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
@@ -100,13 +104,22 @@ class ShaderUniformVariable(Enum):
     COLOR = auto()
     RGB_COLOR = auto()
     RGBA_COLOR = auto()
+
     # Lighting
+
     AMBIENT_LIGHT_STRENGTH = auto()
     AMBIENT_LIGHT_COLOR = auto()
     DIFFUSE_LIGHT_POSITION = auto()
+
+    # - deferred
+    POSITION_TEXTURE = auto()
+    NORMAL_TEXTURE = auto()
+    COLOR_TEXTURE = auto()
+
+
     # Multiple Lights
 
-    VIEW_POS = auto()
+    CAMERA_POSITION = auto()
     DIR_LIGHT = auto()
     POINT_LIGHTS = auto()
     SPOT_LIGHT = auto()
@@ -169,6 +182,13 @@ shader_uniform_variable_to_data = {
     ShaderUniformVariable.RGB_COLOR: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.RGB_COLOR: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.RGBA_COLOR: ShaderUniformVariableData("vec4"),
+
+
+    ShaderUniformVariable.POSITION_TEXTURE: ShaderUniformVariableData("sampler2D"),
+    ShaderUniformVariable.NORMAL_TEXTURE: ShaderUniformVariableData("sampler2D"),
+    ShaderUniformVariable.COLOR_TEXTURE : ShaderUniformVariableData("sampler2D"),
+
+
     ShaderUniformVariable.AMBIENT_LIGHT_STRENGTH: ShaderUniformVariableData("float"),
     ShaderUniformVariable.AMBIENT_LIGHT_COLOR: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.DIFFUSE_LIGHT_POSITION: ShaderUniformVariableData("vec3"),
@@ -184,7 +204,7 @@ shader_uniform_variable_to_data = {
     ShaderUniformVariable.PACKED_TEXTURE_BOUNDING_BOXES: ShaderUniformVariableData("sampler1D"),  
 
     # lighting
-    ShaderUniformVariable.VIEW_POS: ShaderUniformVariableData("vec3"),
+    ShaderUniformVariable.CAMERA_POSITION: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.DIR_LIGHT: ShaderUniformVariableData("DirLight"),
     ShaderUniformVariable.POINT_LIGHTS: ShaderUniformVariableData("PointLight"),
     ShaderUniformVariable.SPOT_LIGHT: ShaderUniformVariableData("SpotLight"),
@@ -309,6 +329,14 @@ shader_catalog = {
     ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX: ShaderProgram(
         "out/CWL_v_transformation_ubos_1024_with_colored_vertex.vert",
         "out/colored_vertices.frag",
+    ),
+    ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX_DEFERED_LIGHTING_FRAMEBUFFERS : ShaderProgram(
+        "out/lighting/CWL_v_ubos_1024_colors_and_normals.vert",
+        "out/lighting/deferred/position_normal_color.frag",
+    ),
+    ShaderType.DEFERRED_LIGHTING : ShaderProgram(
+        "out/absolute_position_textured.vert",
+        "out/lighting/deferred/deferred_lighting.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_OBJECT_ID: ShaderProgram(
         "out/CWL_v_transformation_ubos_1024_with_object_id_passthrough.vert",
