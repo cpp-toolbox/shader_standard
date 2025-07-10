@@ -7,6 +7,7 @@ Whenever you add a new shader you need to register any new information used in h
 
 1. add it to the ShaderType enum
 2. set up the files in shader_catalog
+3. If there are new shader uniforms that haven't been used yet, register those too, same for vertex attributes
 
 The identifiers used for the enums here should be the same as the 
 variables used for them in the shaders in lower case eg)
@@ -40,6 +41,9 @@ class ShaderVertexAttributeVariable(Enum):
     BONE_WEIGHTS = auto()
 
     OBJECT_ID = auto()
+
+    # shadows
+    LIGHT_SPACE_POSITION = auto()
 
     # texture packer
     PASSTHROUGH_PACKED_TEXTURE_INDEX = auto()
@@ -79,6 +83,10 @@ class ShaderType(Enum):
     CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX_DEFERED_LIGHTING_FRAMEBUFFERS = auto()
     DEFERRED_LIGHTING = auto()
 
+    # shadows
+    LIGHT_SPACE_UBOS_1024 = auto()
+    SHADOW_MAPPING = auto()
+
     # texture packer
     CWL_V_TRANSFORMATION_TEXTURE_PACKED = auto()
     TEXTURE_PACKER_RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
@@ -116,6 +124,11 @@ class ShaderUniformVariable(Enum):
     NORMAL_TEXTURE = auto()
     COLOR_TEXTURE = auto()
 
+
+    # shadows 
+    LIGHT_SPACE_DEPTH_MAP = auto()
+    LIGHT_POSITION = auto()
+    WORLD_TO_LIGHT = auto()
 
     # Multiple Lights
 
@@ -173,6 +186,9 @@ class ShaderUniformVariableData:
 shader_uniform_variable_to_data = {
     ShaderUniformVariable.CAMERA_TO_CLIP: ShaderUniformVariableData("mat4"),
     ShaderUniformVariable.WORLD_TO_CAMERA: ShaderUniformVariableData("mat4"),
+    ShaderUniformVariable.WORLD_TO_LIGHT: ShaderUniformVariableData("mat4"),
+    ShaderUniformVariable.LIGHT_SPACE_DEPTH_MAP: ShaderUniformVariableData("sampler2D"),
+    ShaderUniformVariable.LIGHT_POSITION: ShaderUniformVariableData("vec3"),
     ShaderUniformVariable.LOCAL_TO_WORLD: ShaderUniformVariableData("mat4"),
     ShaderUniformVariable.TRANSFORM: ShaderUniformVariableData("mat4"),
     ShaderUniformVariable.ASPECT_RATIO: ShaderUniformVariableData("vec2"),
@@ -277,6 +293,7 @@ vertex_attribute_to_configuration = {
     ShaderVertexAttributeVariable.PASSTHROUGH_BONE_IDS: GLVertexAttributeConfiguration("4", "GL_INT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_BONE_WEIGHTS: GLVertexAttributeConfiguration("4", "GL_FLOAT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
+
     ShaderVertexAttributeVariable.PASSTHROUGH_PACKED_TEXTURE_BOUNDING_BOX_INDEX: GLVertexAttributeConfiguration("1", "GL_INT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.LOCAL_TO_WORLD_INDEX: GLVertexAttributeConfiguration("1", " GL_UNSIGNED_INT", "GL_FALSE", "0", "(void *)0"),
     ShaderVertexAttributeVariable.PASSTHROUGH_OBJECT_ID: GLVertexAttributeConfiguration("1", " GL_UNSIGNED_INT", "GL_FALSE", "0", "(void *)0")
@@ -337,6 +354,14 @@ shader_catalog = {
     ShaderType.DEFERRED_LIGHTING : ShaderProgram(
         "out/absolute_position_textured.vert",
         "out/lighting/deferred/deferred_lighting.frag",
+    ),
+    ShaderType.LIGHT_SPACE_UBOS_1024 : ShaderProgram(
+        "out/lighting/shadows/light_space_ubos_1024.vert",
+        "out/empty.vert",
+    ),
+    ShaderType.SHADOW_MAPPING : ShaderProgram(
+        "out/lighting/shadows/shadows_ubos_1024.vert",
+        "out/lighting/shadows/shadow.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_OBJECT_ID: ShaderProgram(
         "out/CWL_v_transformation_ubos_1024_with_object_id_passthrough.vert",
@@ -475,6 +500,9 @@ shader_vertex_attribute_to_data = {
     ),
     ShaderVertexAttributeVariable.PACKED_TEXTURE_BOUNDING_BOX_INDEX : VertexAttributeData(
         "", "", "", "int"
+    ),
+    ShaderVertexAttributeVariable.LIGHT_SPACE_POSITION : VertexAttributeData(
+        "", "", "", "vec4"
     ),
     # BONE_WEIGHTS = auto()
 }
