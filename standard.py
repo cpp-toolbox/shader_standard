@@ -56,8 +56,10 @@ class ShaderType(Enum):
     # basic
     RIGGED_AND_ANIMATED_CWL_V_TRANSFORMATION_WITH_TEXTURES = auto()
     CWL_V_TRANSFORMATION_WITH_SOLID_COLOR = auto()
+
     CWL_V_TRANSFORMATION_WITH_COLORED_VERTEX = auto()
     CW_V_TRANSFORMATION_WITH_COLORED_VERTEX = auto()
+    TRANSFORM_V_WITH_COLORED_VERTEX = auto()
 
     CWL_V_TRANSFORMATION_UBOS_1024_WITH_SOLID_COLOR = auto()
     CWL_V_TRANSFORMATION_UBOS_1024_WITH_COLORED_VERTEX = auto()
@@ -337,6 +339,10 @@ shader_catalog = {
     ),
     ShaderType.CW_V_TRANSFORMATION_WITH_COLORED_VERTEX: ShaderProgram(
         "out/CW_v_transformation_with_colored_vertices.vert",
+        "out/colored_vertices.frag",
+    ),
+    ShaderType.TRANSFORM_V_WITH_COLORED_VERTEX  : ShaderProgram(
+        "out/transform_v_with_colored_vertices.vert",
         "out/colored_vertices.frag",
     ),
     ShaderType.CWL_V_TRANSFORMATION_UBOS_1024_WITH_SOLID_COLOR: ShaderProgram(
